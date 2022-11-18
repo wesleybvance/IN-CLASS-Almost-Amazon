@@ -49,7 +49,7 @@ const createBook = (payload) => new Promise((resolve, reject) => {
     headers: {
       'Content-Type': 'application/json',
     }, // you technically do not need the options object for GET requests, but using it here for consistency
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   })
     .then((response) => response.json())
     .then((data) => resolve(data))
@@ -59,14 +59,14 @@ const createBook = (payload) => new Promise((resolve, reject) => {
 // TODO: UPDATE BOOK
 const updateBook = (payload) => new Promise((resolve, reject) => {
   fetch(`${endpoint}/books/${payload.firebaseKey}.json`, {
-    method: 'POST',
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     }, // you technically do not need the options object for GET requests, but using it here for consistency
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   })
     .then((response) => response.json())
-    .then((data) => resolve(data))
+    .then(resolve)
     .catch(reject);
 });
 
