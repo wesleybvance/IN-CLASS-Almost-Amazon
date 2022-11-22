@@ -1,13 +1,16 @@
 import { deleteBook, getBooks, getSingleBook } from '../api/bookData';
 import addBookForm from '../components/forms/addBookForm';
-import { deleteSingleAuthor, getAuthors, getSingleAuthor } from '../api/authorData';
+import {
+  getAuthors, getSingleAuthor
+} from '../api/authorData';
 import { showAuthors } from '../pages/authors';
 import { showBooks } from '../pages/books';
 import addAuthorForm from '../components/forms/addAuthorForm';
-import getBookDetails from '../api/mergedData';
+import { getBookDetails, deleteAuthorBooksRelationship } from '../api/mergedData';
 import viewBook from '../pages/viewBook';
+import viewAuthor from '../pages/viewAuthor';
 
-const domEvents = () => {
+const domEvents = (user) => {
   document.querySelector('#main-container').addEventListener('click', (e) => {
     // TODO: CLICK EVENT FOR DELETING A BOOK
     if (e.target.id.includes('delete-book')) {
@@ -50,9 +53,11 @@ const domEvents = () => {
         // console.warn('DELETE AUTHOR', e.target.id);
         // console.warn(e.target.id.split('--'));
         const [, firebaseKey] = e.target.id.split('--');
-        deleteSingleAuthor(firebaseKey).then(() => {
-          getAuthors().then(showAuthors);
+        deleteAuthorBooksRelationship(firebaseKey).then(() => {
+          getAuthors(user.uid).then(showAuthors);
         });
+        // deleteSingleAuthor(firebaseKey).then(() => {
+        //   getAuthors().then(showAuthors);
       }
     }
 
@@ -64,6 +69,11 @@ const domEvents = () => {
     if (e.target.id.includes('update-author')) {
       const [, firebaseKey] = e.target.id.split('--');
       getSingleAuthor(firebaseKey).then((authorObj) => addAuthorForm(authorObj));
+    }
+    // CLICK EVENT FOR VIEW AUTHOR
+    if (e.target.id.includes('view-author')) {
+      const [, firebaseKey] = e.target.id.split('--');
+      getSingleAuthor(firebaseKey).then((authorObj) => viewAuthor(authorObj));
     }
   });
 };

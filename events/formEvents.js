@@ -2,8 +2,9 @@ import { createAuthor, getAuthors, updateAuthor } from '../api/authorData';
 import { createBook, getBooks, updateBook } from '../api/bookData';
 import { showBooks } from '../pages/books';
 import { showAuthors } from '../pages/authors';
+import viewAuthor from '../pages/viewAuthor';
 
-const formEvents = () => {
+const formEvents = (user) => {
   document.querySelector('#main-container').addEventListener('submit', (e) => {
     e.preventDefault();
     // TODO: CLICK EVENT FOR SUBMITTING FORM FOR ADDING A BOOK
@@ -15,6 +16,7 @@ const formEvents = () => {
         price: document.querySelector('#price').value,
         author_id: document.querySelector('#author_id').value,
         sale: document.querySelector('#sale').checked,
+        uid: user.uid,
       };
       createBook(payload).then(({ name }) => {
         const patchPayload = { firebaseKey: name };
@@ -50,6 +52,7 @@ const formEvents = () => {
         first_name: document.querySelector('#first_name').value,
         last_name: document.querySelector('#last_name').value,
         email: document.querySelector('#email').value,
+        uid: user.uid
       };
       createAuthor(payload).then(({ name }) => {
         const patchPayload = { firebaseKey: name };
@@ -69,7 +72,7 @@ const formEvents = () => {
         firebaseKey,
       };
       updateAuthor(payload).then(() => {
-        getAuthors().then(showAuthors);
+        getAuthors().then(viewAuthor);
       });
     }
   });
