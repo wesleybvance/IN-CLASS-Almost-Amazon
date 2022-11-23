@@ -2,7 +2,7 @@ import { createAuthor, getAuthors, updateAuthor } from '../api/authorData';
 import { createBook, getBooks, updateBook } from '../api/bookData';
 import { showBooks } from '../pages/books';
 import { showAuthors } from '../pages/authors';
-import viewAuthor from '../pages/viewAuthor';
+// import viewAuthor from '../pages/viewAuthor';
 
 const formEvents = (user) => {
   document.querySelector('#main-container').addEventListener('submit', (e) => {
@@ -22,7 +22,7 @@ const formEvents = (user) => {
         const patchPayload = { firebaseKey: name };
 
         updateBook(patchPayload).then(() => {
-          getBooks().then(showBooks);
+          getBooks(user.uid).then(showBooks);
         });
       });
     }
@@ -31,7 +31,7 @@ const formEvents = (user) => {
     if (e.target.id.includes('update-book')) {
       const [, firebaseKey] = e.target.id.split('--');
       // console.warn('CLICKED UPDATE BOOK', e.target.id);
-      console.warn(firebaseKey);
+      // console.warn(firebaseKey);
       const payload = {
         title: document.querySelector('#title').value,
         description: document.querySelector('#description').value,
@@ -42,7 +42,7 @@ const formEvents = (user) => {
         firebaseKey,
       };
       updateBook(payload).then(() => {
-        getBooks().then(showBooks);
+        getBooks(user.uid).then(showBooks);
       });
     }
 
@@ -52,13 +52,14 @@ const formEvents = (user) => {
         first_name: document.querySelector('#first_name').value,
         last_name: document.querySelector('#last_name').value,
         email: document.querySelector('#email').value,
+        favorite: document.querySelector('#favorite').checked,
         uid: user.uid
       };
       createAuthor(payload).then(({ name }) => {
         const patchPayload = { firebaseKey: name };
 
         updateAuthor(patchPayload).then(() => {
-          getAuthors().then(showAuthors);
+          getAuthors(user.uid).then(showAuthors);
         });
       });
     }
@@ -69,10 +70,11 @@ const formEvents = (user) => {
         first_name: document.querySelector('#first_name').value,
         last_name: document.querySelector('#last_name').value,
         email: document.querySelector('#email').value,
+        favorite: document.querySelector('#favorite').checked,
         firebaseKey,
       };
       updateAuthor(payload).then(() => {
-        getAuthors().then(viewAuthor);
+        getAuthors(user.uid).then(showAuthors);
       });
     }
   });

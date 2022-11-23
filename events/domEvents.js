@@ -1,14 +1,15 @@
 import { deleteBook, getBooks, getSingleBook } from '../api/bookData';
 import addBookForm from '../components/forms/addBookForm';
 import {
-  getAuthors, getSingleAuthor
+  getAuthors, getSingleAuthor, updateAuthor
 } from '../api/authorData';
-import { showAuthors } from '../pages/authors';
+import { showAuthors, favButtonFunc } from '../pages/authors';
 import { showBooks } from '../pages/books';
 import addAuthorForm from '../components/forms/addAuthorForm';
 import { getBookDetails, deleteAuthorBooksRelationship } from '../api/mergedData';
 import viewBook from '../pages/viewBook';
 import viewAuthor from '../pages/viewAuthor';
+import renderToDOM from '../utils/renderToDom';
 
 const domEvents = (user) => {
   document.querySelector('#main-container').addEventListener('click', (e) => {
@@ -20,7 +21,7 @@ const domEvents = (user) => {
         // console.warn(e.target.id.split('--'));
         const [, firebaseKey] = e.target.id.split('--');
         deleteBook(firebaseKey).then(() => {
-          getBooks().then(showBooks);
+          getBooks(user.uid).then(showBooks);
         });
       }
     }
@@ -75,7 +76,20 @@ const domEvents = (user) => {
       const [, firebaseKey] = e.target.id.split('--');
       getSingleAuthor(firebaseKey).then((authorObj) => viewAuthor(authorObj));
     }
+    // FAVORITE AUTHOR
+
+    if (e.target.id.includes('favButton')) {
+      const [, firebaseKey] = e.target.id.split('--');
+      const payload = {
+        favorite: !(getSingleAuthor(firebaseKey).then((author) => author.favorite)),
+        firebaseKey,
+        // write discussion ticket for how to get object value in this kind of function call
+      };
+      updateAuthor(payload).then(() => {
+        getAuthors(user.uid).then(showAuthors);
+      });
+      renderToDOM(`#favButtonDiv--${firebaseKey}`, favButtonFunc(firebaseKey));
+    }
   });
 };
-
 export default domEvents;
