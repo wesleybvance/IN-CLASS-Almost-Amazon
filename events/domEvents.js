@@ -80,13 +80,15 @@ const domEvents = (user) => {
 
     if (e.target.id.includes('favButton')) {
       const [, firebaseKey] = e.target.id.split('--');
-      const payload = {
-        favorite: !(getSingleAuthor(firebaseKey).then((author) => author.favorite)),
-        firebaseKey,
-        // write discussion ticket for how to get object value in this kind of function call
-      };
-      updateAuthor(payload).then(() => {
-        getAuthors(user.uid).then(showAuthors);
+      getSingleAuthor(firebaseKey).then((author) => {
+        const payload = {
+          favorite: !author.favorite,
+          firebaseKey,
+        };
+        updateAuthor(payload).then(() => {
+          getAuthors(user.uid).then(showAuthors);
+          console.warn(payload);
+        });
       });
       renderToDOM(`#favButtonDiv--${firebaseKey}`, favButtonFunc(firebaseKey));
     }

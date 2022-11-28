@@ -12,9 +12,9 @@ const favButtonFunc = (firebaseKey) => {
   const status = authorObj.favorite;
   const favorited = `<button type="button" class="btn btn-outline-warning" id="favButton--${firebaseKey}">Unfavorite</button>`;
   const unfavorited = `<button type="button" class="btn btn-dark" id="favButton--${firebaseKey}">Favorite</button>`;
-  if (status) {
-    return favorited;
-  } return unfavorited;
+  if (status === false) {
+    return unfavorited;
+  } return favorited;
 };
 
 const showAuthors = (array) => {
